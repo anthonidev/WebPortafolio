@@ -2,7 +2,7 @@ import React from 'react'
 
 const index = () => {
   return (
-    <div className='font-bold'>index</div>
+    <div className='font-bold'>indaex</div>
   )
 }
 

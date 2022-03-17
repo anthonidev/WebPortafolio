@@ -17,9 +17,9 @@ const Sidebar = () => {
                 alt='anthoni avatar'
             >
             </Image>
-            <h3 className='my-4 text-3xl font-bold tracking-wider font-orbitron '>
-                <span>Anthoni </span>
-                Portocarrero Rodriguez
+            <h3 className='my-4 text-3xl font-bold tracking-wider font-orbitron  '>
+                <span className='text-green-500' >Anthoni </span>
+                <span className='text-2xl'>Portocarrero Rodriguez</span>
             </h3>
             <p className='px-2 py-1 my-3 bg-gray-200  rounded-full'>Web Developer</p>
 
@@ -47,7 +47,11 @@ const Sidebar = () => {
                 <p className='my-2'>958920823</p>
             </div>
 
-            <button className='bg-gradient-to-r from-green-400 to-blue-500 w-8/12 rounded-full py-2 px-5 my-2 text-white'>Email me</button>
+            <button
+                onClick={() => window.open('mailto:softwaretoni21@gmail.com')}
+                className='focus:outline-none bg-gradient-to-r from-green-400 to-blue-500 w-8/12 rounded-full py-2 px-5 my-2 text-white'>
+                Email me
+            </button>
             <button className='bg-gradient-to-r from-green-400 to-blue-500 w-8/12 rounded-full py-2 px-5 text-white'>Toggle theme</button>
         </div>
     )
