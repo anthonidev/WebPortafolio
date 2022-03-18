@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }) {
       <div className='h-full col-span-12 p-4 text-base text-center bg-white dark:bg-dark-500 lg:col-span-3 rounded-2xl shadow-custom-light'>
         <Sidebar />
       </div>
-      <div className='flex flex-col col-span-12 overflow-hidden bg-white shadow-custom-light dark:shadow-custom-dark rounded-2xl lg:col-span-9'>
+      <div className='flex flex-col col-span-12 overflow-hidden bg-white shadow-custom-light rounded-2xl lg:col-span-9 '>
         <Navbar />
         <Component {...pageProps} />
       </div>
