@@ -12,7 +12,7 @@ const index = () => {
         <div className='grid lg:grid-cols-2 gap-6 '>
           {
             services.map(service => (
-              <div className='lg:col-span-1 rounded-lg bg-gray-100  dark:bg-dark-200 '>
+              <div className='lg:col-span-1 rounded-lg bg-gray-100  dark:bg-dark-200 ' key={service.title}>
                 <ServiceCard service={service} />
 
               </div>
