@@ -1,6 +1,5 @@
 import React from 'react'
 import Image from 'next/image'
-import avatar from '../assets/avatar.JPEG'
 import {useTheme} from 'next-themes'
 import { AiFillGithub, AiFillLinkedin, AiFillInstagram, AiOutlineCloudDownload } from "react-icons/ai";
 import { GoLocation } from "react-icons/go";
@@ -17,10 +16,11 @@ const Sidebar = () => {
                 className='w-32 h-32 rounded-full mx-auto'
                 height="128px"
                 width="128px"
-                src={avatar}
+                src={"/images/avatar.JPEG"}
+                layout="intrinsic"
                 alt='anthoni avatar'
-            >
-            </Image>
+                quality={100}
+            />
             <h3 className='my-4 text-3xl font-bold tracking-wider font-orbitron  '>
                 <span className='text-green-500' >Anthoni </span>
                 <span className='text-2xl'>Portocarrero Rodriguez</span>

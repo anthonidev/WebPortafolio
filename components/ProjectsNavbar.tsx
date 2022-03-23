@@ -6,19 +6,25 @@ import { Category } from '../type';
 export const NavItem:FunctionComponent<{ 
     value: Category | "all";
     handlerFilterCategory:Function ;
+    active:string;
 }> = ({ 
     value,
-    handlerFilterCategory
+    handlerFilterCategory,
+    active
  }) => {
+
+    let className="cursor-pointer hover:text-green-500 capitalize "
+    if(active===value)
+        className+="text-green-500"
     return (
-        <li onClick={()=>handlerFilterCategory(value)} className='cursor-pointer hover:text-green-500 capitalize'>
+        <li onClick={()=>handlerFilterCategory(value)} className={className}>
             {value}
         </li>
     )
 }
 
 
-const ProjectsNavbar:FunctionComponent<{handlerFilterCategory:Function }> = (props) => {
+const ProjectsNavbar:FunctionComponent<{handlerFilterCategory:Function,active:string }> = (props) => {
     return (
         <div className="flex px-3 py-2 space-x-3 overflow-x-auto list-none">
             <NavItem value='all' {...props}/>
