@@ -3,7 +3,7 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-export function ThemeToggle() {
+export function ThemeToggle({ isMobile = false }: { isMobile?: boolean }) {
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -30,15 +30,15 @@ export function ThemeToggle() {
 
   const themes = [
     {
-      value: "system",
-      label: "Sistema",
+      value: "light",
+      label: "Claro",
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
           />
         </svg>
       ),
@@ -58,15 +58,15 @@ export function ThemeToggle() {
       ),
     },
     {
-      value: "light",
-      label: "Claro",
+      value: "system",
+      label: "Sistema",
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
           />
         </svg>
       ),
@@ -75,6 +75,32 @@ export function ThemeToggle() {
 
   const currentTheme = themes.find((t) => t.value === theme) || themes[0];
 
+  // Mobile: mostrar tres botones directos
+  if (isMobile) {
+    return (
+      <div className="flex items-center gap-2 justify-center">
+        {themes.map((t) => (
+          <button
+            key={t.value}
+            type="button"
+            onClick={() => setTheme(t.value)}
+            className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${
+              theme === t.value
+                ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border-blue-500/50 text-foreground shadow-lg shadow-blue-500/10"
+                : "bg-foreground/5 border-foreground/10 text-foreground/70 hover:bg-foreground/10 hover:text-foreground hover:border-foreground/20"
+            }`}
+            aria-label={t.label}
+            title={t.label}
+          >
+            {t.icon}
+            <span className="text-sm font-medium">{t.label}</span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  // Desktop: selector desplegable
   return (
     <div className="relative theme-toggle">
       <button

@@ -181,8 +181,8 @@ export default function Navbar() {
           ))}
 
           {/* Theme Toggle Mobile */}
-          <div className="mt-4">
-            <ThemeToggle />
+          <div className="mt-4 pt-2 border-t border-foreground/10">
+            <ThemeToggle isMobile />
           </div>
 
           {/* Mobile CV Download Button */}
