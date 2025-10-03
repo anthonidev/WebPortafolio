@@ -81,7 +81,7 @@ export const projectsData = [
         id: 9,
         name: "Kopiri",
         description: "Website del software Kopiri que permite la optimización de imágenes.",
-        images: ["/projects/kopiri/kopiri1.webp", "/projects/kopiri/kopiri2.webp"],
+        images: ["/projects/kopiri-site/kopiri1.webp", "/projects/kopiri-site/kopiri2.webp"],
         link: "https://kopiri-web.vercel.app",
         technologies: [1,3,4] // Next.js, TypeScript, Tailwind CSS, Node.js, NestJS, MongoDB, PostgreSQL
     }
