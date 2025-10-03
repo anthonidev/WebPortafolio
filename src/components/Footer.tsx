@@ -199,22 +199,7 @@ export default function Footer() {
             >
               © {currentYear} Anthoni Portocarrero Rodriguez. Todos los derechos reservados.
             </motion.p>
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="text-sm text-foreground/60"
-            >
-              Hecho con{' '}
-              <motion.span
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY }}
-                className="inline-block text-red-500"
-              >
-                ♥
-              </motion.span>{' '}
-              usando Next.js y Tailwind CSS
-            </motion.p>
+
           </div>
         </div>
       </div>
