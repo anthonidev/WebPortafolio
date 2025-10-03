@@ -45,8 +45,8 @@ export default function Projects() {
               type="button"
               onClick={() => setSelectedTech(null)}
               className={`px-5 py-2.5 rounded-lg font-medium transition-all ${selectedTech === null
-                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25'
-                  : 'bg-foreground/5 border border-foreground/10 hover:bg-foreground/10 text-foreground/70'
+                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25'
+                : 'bg-foreground/5 border border-foreground/10 hover:bg-foreground/10 text-foreground/70'
                 }`}
             >
               Todos ({projectsData.length})
@@ -61,8 +61,8 @@ export default function Projects() {
                   type="button"
                   onClick={() => setSelectedTech(tech.id)}
                   className={`px-5 py-2.5 rounded-lg font-medium transition-all ${selectedTech === tech.id
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25'
-                      : 'bg-foreground/5 border border-foreground/10 hover:bg-foreground/10 text-foreground/70'
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25'
+                    : 'bg-foreground/5 border border-foreground/10 hover:bg-foreground/10 text-foreground/70'
                     }`}
                 >
                   {tech.name} ({count})
@@ -107,33 +107,7 @@ export default function Projects() {
           </div>
         )}
 
-        {/* Stats */}
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2">
-              {projectsData.length}
-            </div>
-            <div className="text-sm text-foreground/60">Proyectos totales</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2">
-              {technologiesData.length}
-            </div>
-            <div className="text-sm text-foreground/60">Tecnologías</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2">
-              100%
-            </div>
-            <div className="text-sm text-foreground/60">Proyectos exitosos</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2">
-              5+
-            </div>
-            <div className="text-sm text-foreground/60">Clientes satisfechos</div>
-          </div>
-        </div>
+
       </div>
     </section>
   );

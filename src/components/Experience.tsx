@@ -50,33 +50,7 @@ export default function Experience() {
           </p>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-          <div className="bg-foreground/5 border border-foreground/10 rounded-2xl p-6 text-center hover:border-foreground/20 transition-all hover:shadow-lg">
-            <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2">
-              {totalYears()}+
-            </div>
-            <div className="text-sm text-foreground/60">Años de experiencia</div>
-          </div>
-          <div className="bg-foreground/5 border border-foreground/10 rounded-2xl p-6 text-center hover:border-foreground/20 transition-all hover:shadow-lg">
-            <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2">
-              {experienceData.length}
-            </div>
-            <div className="text-sm text-foreground/60">Empresas</div>
-          </div>
-          <div className="bg-foreground/5 border border-foreground/10 rounded-2xl p-6 text-center hover:border-foreground/20 transition-all hover:shadow-lg">
-            <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2">
-              {getAllTechnologies().length}+
-            </div>
-            <div className="text-sm text-foreground/60">Tecnologías</div>
-          </div>
-          <div className="bg-foreground/5 border border-foreground/10 rounded-2xl p-6 text-center hover:border-foreground/20 transition-all hover:shadow-lg">
-            <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent mb-2">
-              100%
-            </div>
-            <div className="text-sm text-foreground/60">Compromiso</div>
-          </div>
-        </div>
+
 
         {/* Timeline */}
         <div className="max-w-4xl mx-auto">

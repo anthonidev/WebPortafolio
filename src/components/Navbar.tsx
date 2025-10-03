@@ -46,7 +46,7 @@ export default function Navbar() {
               onClick={() => scrollToSection("inicio")}
               className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
             >
-              AP
+              {"<AP/>"}
             </button>
           </div>
 
