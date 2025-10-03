@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ThemeToggle } from "./ThemeToggle";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -85,6 +86,11 @@ export default function Navbar() {
                 )}
               </button>
             ))}
+
+            {/* Theme Toggle */}
+            <div className="ml-2">
+              <ThemeToggle />
+            </div>
 
             {/* Download CV Button */}
             <a
@@ -173,6 +179,11 @@ export default function Navbar() {
               )}
             </button>
           ))}
+
+          {/* Theme Toggle Mobile */}
+          <div className="mt-4">
+            <ThemeToggle />
+          </div>
 
           {/* Mobile CV Download Button */}
           <a
