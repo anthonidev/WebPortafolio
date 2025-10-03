@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ExperienceCardProps {
   id: number;
@@ -51,25 +52,6 @@ export default function ExperienceCard({
     const start = formatDate(startDate);
     const end = current ? 'Actualidad' : endDate ? formatDate(endDate) : '';
     return `${start} - ${end}`;
-  };
-
-  const getDuration = () => {
-    const start = new Date(startDate);
-    const end = current ? new Date() : endDate ? new Date(endDate) : new Date();
-    const months =
-      (end.getFullYear() - start.getFullYear()) * 12 +
-      (end.getMonth() - start.getMonth());
-    const years = Math.floor(months / 12);
-    const remainingMonths = months % 12;
-
-    if (years > 0 && remainingMonths > 0) {
-      return `${years} año${years > 1 ? 's' : ''} ${remainingMonths} mes${remainingMonths > 1 ? 'es' : ''
-        }`;
-    } else if (years > 0) {
-      return `${years} año${years > 1 ? 's' : ''}`;
-    } else {
-      return `${remainingMonths} mes${remainingMonths > 1 ? 'es' : ''}`;
-    }
   };
 
   return (
@@ -147,25 +129,22 @@ export default function ExperienceCard({
               </div>
             </div>
 
-            <div className="flex flex-col items-start md:items-end gap-1 text-sm">
-              <div className="flex items-center gap-2 text-foreground/70">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <title>Calendar icon</title>
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                <span>{getDateRange()}</span>
-              </div>
-              <span className="text-xs text-foreground/50">{getDuration()}</span>
+            <div className="flex items-center gap-2 text-sm text-foreground/70">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <title>Calendar icon</title>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              <span>{getDateRange()}</span>
             </div>
           </div>
 
@@ -185,12 +164,13 @@ export default function ExperienceCard({
                 <span>
                   {isExpanded ? 'Ocultar' : 'Ver'} responsabilidades
                 </span>
-                <svg
-                  className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''
-                    }`}
+                <motion.svg
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  animate={{ rotate: isExpanded ? 180 : 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
                 >
                   <title>Toggle responsibilities icon</title>
                   <path
@@ -199,24 +179,40 @@ export default function ExperienceCard({
                     strokeWidth={2}
                     d="M19 9l-7 7-7-7"
                   />
-                </svg>
+                </motion.svg>
               </button>
 
-              {isExpanded && (
-                <ul className="space-y-2">
-                  {responsibilities.map((responsibility) => (
-                    <li
-                      key={responsibility}
-                      className="flex gap-3 text-sm text-foreground/70"
-                    >
-                      <span className="text-blue-500 mt-1.5 flex-shrink-0">
-                        •
-                      </span>
-                      <span className="leading-relaxed">{responsibility}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <AnimatePresence initial={false}>
+                {isExpanded && (
+                  <motion.ul
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="space-y-2 overflow-hidden"
+                  >
+                    {responsibilities.map((responsibility, index) => (
+                      <motion.li
+                        key={responsibility}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{
+                          duration: 0.3,
+                          delay: index * 0.05,
+                          ease: "easeOut"
+                        }}
+                        className="flex gap-3 text-sm text-foreground/70"
+                      >
+                        <span className="text-blue-500 mt-1.5 flex-shrink-0">
+                          •
+                        </span>
+                        <span className="leading-relaxed">{responsibility}</span>
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                )}
+              </AnimatePresence>
             </div>
           )}
 

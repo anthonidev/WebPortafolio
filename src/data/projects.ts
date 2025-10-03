@@ -7,8 +7,7 @@ export const technologiesData = [
     { id: 6, name: "PostgreSQL" },
     { id: 7, name: "Nats" },
     { id: 8, name: "Astro" },
-    { id: 9, name: "Django" },
-    { id: 10, name: "Python" },
+ 
 ];
 
 export const projectsData = [
@@ -84,7 +83,7 @@ export const projectsData = [
         description: "Website del software Kopiri que permite la optimización de imágenes.",
         images: ["/projects/kopiri/kopiri1.png", "/projects/kopiri/kopiri2.png"],
         link: "https://kopiri-web.vercel.app",
-        technologies: [1,3,4,10] // Next.js, TypeScript, Tailwind CSS, Node.js, NestJS, MongoDB, PostgreSQL
+        technologies: [1,3,4] // Next.js, TypeScript, Tailwind CSS, Node.js, NestJS, MongoDB, PostgreSQL
     }
 ];
 

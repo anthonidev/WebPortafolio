@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { projectsData, technologiesData } from '@/data/projects';
 import ProjectCard from './ProjectCard';
 
@@ -27,57 +28,88 @@ export default function Projects() {
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold">
-            Mis{' '}
+            Proyectos{' '}
             <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-              Proyectos
+              Destacados
             </span>
           </h2>
           <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-            Una selección de proyectos en los que he trabajado, desde plataformas
+            Una selección de mis mejores proyectos, desde plataformas
             enterprise hasta landing pages personalizadas.
           </p>
         </div>
 
         {/* Technology Filter */}
         <div className="mb-12">
-          <div className="flex flex-wrap gap-3 justify-center">
-            <button
+          <div className="flex flex-wrap gap-2 justify-center">
+            <motion.button
               type="button"
               onClick={() => setSelectedTech(null)}
-              className={`px-5 py-2.5 rounded-lg font-medium transition-all ${selectedTech === null
-                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25'
-                : 'bg-foreground/5 border border-foreground/10 hover:bg-foreground/10 text-foreground/70'
-                }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all overflow-hidden ${
+                selectedTech === null
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md shadow-blue-500/25'
+                  : 'bg-background/50 backdrop-blur-sm border border-foreground/10 hover:border-blue-500/30 text-foreground/70 hover:text-foreground'
+              }`}
             >
-              Todos ({projectsData.length})
-            </button>
+              {selectedTech === null && (
+                <motion.div
+                  layoutId="activeFilter"
+                  className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600"
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                />
+              )}
+              <span className="relative z-10">Todos</span>
+            </motion.button>
             {technologiesData.map((tech) => {
-              const count = projectsData.filter((p) =>
-                p.technologies.includes(tech.id)
-              ).length;
               return (
-                <button
+                <motion.button
                   key={tech.id}
                   type="button"
                   onClick={() => setSelectedTech(tech.id)}
-                  className={`px-5 py-2.5 rounded-lg font-medium transition-all ${selectedTech === tech.id
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25'
-                    : 'bg-foreground/5 border border-foreground/10 hover:bg-foreground/10 text-foreground/70'
-                    }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all overflow-hidden ${
+                    selectedTech === tech.id
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md shadow-blue-500/25'
+                      : 'bg-background/50 backdrop-blur-sm border border-foreground/10 hover:border-blue-500/30 text-foreground/70 hover:text-foreground'
+                  }`}
                 >
-                  {tech.name} ({count})
-                </button>
+                  {selectedTech === tech.id && (
+                    <motion.div
+                      layoutId="activeFilter"
+                      className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600"
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                    />
+                  )}
+                  <span className="relative z-10">{tech.name}</span>
+                </motion.button>
               );
             })}
           </div>
         </div>
 
         {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project) => (
-            <ProjectCard key={project.id} {...project} />
-          ))}
-        </div>
+        <motion.div
+          layout
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project) => (
+              <motion.div
+                key={project.id}
+                layout
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <ProjectCard {...project} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
 
         {/* Empty State */}
         {filteredProjects.length === 0 && (

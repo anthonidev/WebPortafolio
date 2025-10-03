@@ -141,38 +141,81 @@ export default function Hero() {
           </div>
 
           {/* Visual Element */}
-          <div className="hidden lg:flex justify-center items-center">
+          <div className="hidden lg:block">
             <div className="relative">
-              {/* Animated gradient circle */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+              {/* Background glow effect */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-blue-500/20 to-purple-600/20 rounded-full blur-3xl"></div>
 
-              {/* Tech stack floating elements */}
-              <div className="relative w-96 h-96 flex items-center justify-center">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-full h-full relative">
-                    {/* Center circle */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-2xl">
-                      5+
+              {/* Main container */}
+              <div className="relative space-y-6">
+                {/* Profile Image Card */}
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                  <div className="relative bg-background/80 backdrop-blur-sm border border-foreground/10 rounded-2xl p-6 shadow-xl">
+                    <div className="flex items-center gap-6">
+                      <div className="relative">
+                        <div className="w-32 h-32 rounded-2xl overflow-hidden ring-2 ring-blue-500/30">
+                          <img
+                            src="/imgs/profile.webp"
+                            alt="Anthoni Portocarrero"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg">
+                          5+
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold mb-1">Tech Lead</h3>
+                        <p className="text-sm text-foreground/60">Full Stack Developer</p>
+                        <div className="flex gap-2 mt-3">
+                          <div className="px-3 py-1 bg-blue-500/10 text-blue-500 rounded-lg text-xs font-medium">
+                            Available
+                          </div>
+                          <div className="px-3 py-1 bg-foreground/5 rounded-lg text-xs">
+                            Remote
+                          </div>
+                        </div>
+                      </div>
                     </div>
+                  </div>
+                </div>
 
-                    {/* Floating tech badges */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 px-4 py-2 bg-background border border-foreground/10 rounded-lg shadow-lg">
-                      <span className="text-sm font-medium">Next.js</span>
+                {/* Tech Stack Grid */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="group relative">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl blur opacity-0 group-hover:opacity-20 transition duration-300"></div>
+                    <div className="relative bg-background/80 backdrop-blur-sm border border-foreground/10 rounded-xl p-4 hover:border-blue-500/30 transition-colors">
+                      <div className="text-2xl mb-2">⚛️</div>
+                      <h4 className="font-semibold text-sm mb-1">Frontend</h4>
+                      <p className="text-xs text-foreground/60">React, Next.js, Astro</p>
                     </div>
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 px-4 py-2 bg-background border border-foreground/10 rounded-lg shadow-lg">
-                      <span className="text-sm font-medium">NestJS</span>
+                  </div>
+
+                  <div className="group relative">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl blur opacity-0 group-hover:opacity-20 transition duration-300"></div>
+                    <div className="relative bg-background/80 backdrop-blur-sm border border-foreground/10 rounded-xl p-4 hover:border-purple-500/30 transition-colors">
+                      <div className="text-2xl mb-2">🚀</div>
+                      <h4 className="font-semibold text-sm mb-1">Backend</h4>
+                      <p className="text-xs text-foreground/60">NestJS, Django</p>
                     </div>
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 px-4 py-2 bg-background border border-foreground/10 rounded-lg shadow-lg">
-                      <span className="text-sm font-medium">React</span>
+                  </div>
+
+                  <div className="group relative">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-xl blur opacity-0 group-hover:opacity-20 transition duration-300"></div>
+                    <div className="relative bg-background/80 backdrop-blur-sm border border-foreground/10 rounded-xl p-4 hover:border-cyan-500/30 transition-colors">
+                      <div className="text-2xl mb-2">☁️</div>
+                      <h4 className="font-semibold text-sm mb-1">Cloud</h4>
+                      <p className="text-xs text-foreground/60">AWS, Vercel, Railway</p>
                     </div>
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 px-4 py-2 bg-background border border-foreground/10 rounded-lg shadow-lg">
-                      <span className="text-sm font-medium">AWS</span>
-                    </div>
-                    <div className="absolute top-1/4 right-1/4 px-4 py-2 bg-background border border-foreground/10 rounded-lg shadow-lg">
-                      <span className="text-sm font-medium">TypeScript</span>
-                    </div>
-                    <div className="absolute bottom-1/4 left-1/4 px-4 py-2 bg-background border border-foreground/10 rounded-lg shadow-lg">
-                      <span className="text-sm font-medium">Django</span>
+                  </div>
+
+                  <div className="group relative">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-xl blur opacity-0 group-hover:opacity-20 transition duration-300"></div>
+                    <div className="relative bg-background/80 backdrop-blur-sm border border-foreground/10 rounded-xl p-4 hover:border-indigo-500/30 transition-colors">
+                      <div className="text-2xl mb-2">📘</div>
+                      <h4 className="font-semibold text-sm mb-1">Languages</h4>
+                      <p className="text-xs text-foreground/60">TypeScript, Python</p>
                     </div>
                   </div>
                 </div>
