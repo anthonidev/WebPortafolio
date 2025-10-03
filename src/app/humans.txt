@@ -1,0 +1,10 @@
+/* TEAM */
+Developer: Anthoni Portocarrero Rodriguez
+Site: https://anthonidev.site
+Email: softwaretoni21@gmail.com
+Location: Peru
+
+/* SITE */
+Standards: HTML5, CSS3, JavaScript, TypeScript
+Components: Next.js, React, TailwindCSS
+Software: VS Code, Git

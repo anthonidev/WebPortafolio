@@ -75,7 +75,7 @@ export default function ProjectCard({
             layout: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
             default: { duration: 0.3, ease: "easeOut" }
           }}
-          className="group relative bg-background/50 backdrop-blur-sm border border-foreground/10 rounded-2xl overflow-hidden hover:border-blue-500/30 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 cursor-pointer"
+          className="group relative bg-background/50 backdrop-blur-sm border border-foreground/10 rounded-xl sm:rounded-2xl overflow-hidden hover:border-blue-500/30 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 cursor-pointer h-full flex flex-col"
         >
         {/* Gradient overlay on hover */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
@@ -166,16 +166,16 @@ export default function ProjectCard({
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-4 relative z-20">
+        <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 relative z-20 flex-1 flex flex-col">
           {/* Title & Description */}
-          <div className="space-y-2">
+          <div className="space-y-2 flex-1">
             <div className="flex items-start justify-between gap-2">
-              <h3 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent group-hover:from-blue-500 group-hover:to-purple-600 transition-all duration-300">
+              <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent group-hover:from-blue-500 group-hover:to-purple-600 transition-all duration-300">
                 {name}
               </h3>
               <div className="mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <svg
-                  className="w-5 h-5 text-blue-500"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -190,23 +190,23 @@ export default function ProjectCard({
                 </svg>
               </div>
             </div>
-            <p className="text-foreground/60 text-sm leading-relaxed line-clamp-2">
+            <p className="text-foreground/60 text-xs sm:text-sm leading-relaxed line-clamp-2">
               {description}
             </p>
           </div>
 
           {/* Technologies */}
-          <div className="flex flex-wrap gap-2 pt-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-2">
             {getTechNames().slice(0, 4).map((tech) => (
               <span
                 key={tech?.id}
-                className="px-3 py-1.5 bg-gradient-to-r from-foreground/5 to-foreground/10 border border-foreground/10 rounded-lg text-xs font-medium hover:border-blue-500/30 transition-colors"
+                className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-foreground/5 to-foreground/10 border border-foreground/10 rounded-lg text-xs font-medium hover:border-blue-500/30 transition-colors"
               >
                 {tech?.name}
               </span>
             ))}
             {getTechNames().length > 4 && (
-              <span className="px-3 py-1.5 bg-gradient-to-r from-blue-500/10 to-purple-600/10 border border-blue-500/20 rounded-lg text-xs font-medium text-blue-500">
+              <span className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-blue-500/10 to-purple-600/10 border border-blue-500/20 rounded-lg text-xs font-medium text-blue-500">
                 +{getTechNames().length - 4}
               </span>
             )}
@@ -223,7 +223,7 @@ export default function ProjectCard({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-background/80 backdrop-blur-md"
             onClick={() => setIsModalOpen(false)}
           >
             <motion.div
@@ -231,19 +231,19 @@ export default function ProjectCard({
               transition={{
                 layout: { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
               }}
-              className="relative w-full max-w-5xl bg-background border border-foreground/10 rounded-2xl shadow-2xl"
+              className="relative w-full max-w-5xl bg-background border border-foreground/10 rounded-xl sm:rounded-2xl shadow-2xl"
               style={{ overflow: 'hidden' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="max-h-[90vh] overflow-y-auto">
+              <div className="max-h-[90vh] overflow-y-auto custom-scrollbar">
               {/* Close Button */}
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="absolute top-4 right-4 z-20 p-2 bg-background/80 backdrop-blur-sm rounded-full hover:bg-foreground/10 transition-colors"
+                className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 p-2 bg-background/90 backdrop-blur-sm rounded-full hover:bg-foreground/10 transition-colors shadow-lg"
                 aria-label="Cerrar"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 sm:w-6 sm:h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -259,7 +259,7 @@ export default function ProjectCard({
               </button>
 
               {/* Image Carousel - Larger */}
-              <div className="relative aspect-video bg-foreground/5 overflow-hidden">
+              <div className="relative aspect-video bg-foreground/5 overflow-hidden rounded-t-xl sm:rounded-t-2xl">
                 <Swiper
                   modules={[Navigation, Pagination, Autoplay]}
                   navigation={{
@@ -298,17 +298,17 @@ export default function ProjectCard({
                 {images.length > 1 && (
                   <>
                     <div
-                      className={`modal-swiper-button-prev-${safeId} absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-all z-20 cursor-pointer`}
+                      className={`modal-swiper-button-prev-${safeId} absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2 sm:p-3 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-all z-20 cursor-pointer`}
                     >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <title>Previous</title>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </div>
                     <div
-                      className={`modal-swiper-button-next-${safeId} absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-all z-20 cursor-pointer`}
+                      className={`modal-swiper-button-next-${safeId} absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2 sm:p-3 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-all z-20 cursor-pointer`}
                     >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <title>Next</title>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
@@ -318,27 +318,27 @@ export default function ProjectCard({
               </div>
 
               {/* Content */}
-              <div className="p-8 space-y-6">
+              <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
                 {/* Title */}
                 <div>
-                  <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+                  <h2 className="text-2xl sm:text-3xl font-bold mb-2 sm:mb-3 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
                     {name}
                   </h2>
-                  <p className="text-foreground/70 text-base leading-relaxed">
+                  <p className="text-foreground/70 text-sm sm:text-base leading-relaxed">
                     {description}
                   </p>
                 </div>
 
                 {/* Technologies */}
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground/60 mb-3">
+                  <h3 className="text-xs sm:text-sm font-semibold text-foreground/60 mb-2 sm:mb-3">
                     Tecnologías utilizadas
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {getTechNames().map((tech) => (
                       <span
                         key={tech?.id}
-                        className="px-4 py-2 bg-foreground/5 border border-foreground/10 rounded-lg text-sm font-medium hover:bg-foreground/10 transition-colors"
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 bg-foreground/5 border border-foreground/10 rounded-lg text-xs sm:text-sm font-medium hover:bg-foreground/10 transition-colors"
                       >
                         {tech?.name}
                       </span>
@@ -351,11 +351,11 @@ export default function ProjectCard({
                   href={link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-medium hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25"
+                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-sm sm:text-base font-medium hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25"
                 >
                   Visitar proyecto
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4 sm:w-5 sm:h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
