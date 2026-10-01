@@ -1,30 +1,25 @@
-import type { Metadata } from 'next';
-import Navbar from '@/components/Navbar';
-import Hero from '@/components/Hero';
-import Projects from '@/components/Projects';
-import Experience from '@/components/Experience';
-import Contact from '@/components/Contact';
-import Footer from '@/components/Footer';
-
-export const metadata: Metadata = {
-  alternates: {
-    canonical: 'https://anthonidev.site',
-  },
-};
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import About from "@/components/About";
+import Experience from "@/components/Experience";
+import Projects from "@/components/Projects";
+import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
     <>
-      <Navbar />
-      <main itemScope itemType="https://schema.org/ProfilePage">
-        <meta itemProp="name" content="Anthoni Portocarrero Rodriguez" />
-        <meta itemProp="description" content="Tech Lead & Full Stack Developer - Portfolio profesional de Anthoni Portocarrero Rodriguez" />
-        <Hero />
-        <Projects />
-        <Experience />
-        <Contact />
-      </main>
-      <Footer />
+      <div className="relative z-10">
+        <Navbar />
+        <main>
+          <Hero />
+          <About />
+          <Experience />
+          <Projects />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
     </>
   );
 }

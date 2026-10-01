@@ -1,216 +1,237 @@
 "use client";
-
 import { useState, useEffect } from "react";
-import { ThemeToggle } from "./ThemeToggle";
+import { motion, AnimatePresence } from "framer-motion";
+
+const NAV_ITEMS = [
+  { id: "inicio", label: "Inicio" },
+  { id: "sobre-mi", label: "Experiencia" },
+  { id: "experiencia", label: "Trayectoria" },
+  { id: "proyectos", label: "Proyectos" },
+  { id: "contacto", label: "Contacto" },
+];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("inicio");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+    const sectionIds = ["inicio", "sobre-mi", "experiencia", "proyectos", "contacto"];
+    const observers: IntersectionObserver[] = [];
 
-      // Detectar sección activa basada en el scroll
-      const sections = ["inicio", "proyectos", "experiencia", "contacto"];
-      const scrollPosition = window.scrollY + 100; // Offset para activación temprana
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveSection(id);
+        },
+        { threshold: 0.3, rootMargin: "-80px 0px -40% 0px" }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
 
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(sectionId);
-            break;
-          }
-        }
-      }
-    };
-
-    handleScroll(); // Ejecutar al montar
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => observers.forEach((o) => o.disconnect());
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    setMenuOpen(false);
   };
 
-  const navItems = [
-    { id: "inicio", label: "Inicio" },
-    { id: "proyectos", label: "Proyectos" },
-    { id: "experiencia", label: "Experiencia" },
-    { id: "contacto", label: "Contacto" },
-  ];
-
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-        ? "bg-background/80 backdrop-blur-md border-b border-foreground/10"
-        : "bg-transparent"
-        }`}
+    <motion.nav
+      initial={{ y: -60, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="fixed top-0 left-0 right-0 z-50"
+      style={{
+        background: "rgba(11,15,20,0.90)",
+        backdropFilter: "blur(4px)",
+        WebkitBackdropFilter: "blur(4px)",
+        borderBottom: "1px solid rgba(148,163,184,0.10)",
+      }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-14">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <button
-              type="button"
-              onClick={() => scrollToSection("inicio")}
-              className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
-            >
-              {"<AP/>"}
-            </button>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => scrollToSection(item.id)}
-                className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                  activeSection === item.id
-                    ? "text-foreground"
-                    : "text-foreground/70 hover:text-foreground"
-                }`}
-              >
-                {item.label}
-                {activeSection === item.id && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" />
-                )}
-              </button>
-            ))}
-
-            {/* Theme Toggle */}
-            <div className="ml-2">
-              <ThemeToggle />
-            </div>
-
-            {/* Download CV Button */}
-            <a
-              href="/CV_ANTHONI_PORTOCARRERO_RODRIGUEZ_2025.pdf"
-              download
-              className="ml-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25 flex items-center gap-2"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <title>Download icon</title>
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              CV
-            </a>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              type="button"
-              className="p-2 rounded-lg text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition-colors"
-              aria-label="Menu"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <title>{mobileMenuOpen ? "Close menu" : "Open menu"}</title>
-                {mobileMenuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <div
-        className={`md:hidden bg-background/95 backdrop-blur-md border-t border-foreground/10 transition-all duration-300 overflow-hidden ${
-          mobileMenuOpen ? "max-h-96" : "max-h-0"
-        }`}
-      >
-        <div className="px-6 py-4 space-y-2">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => {
-                scrollToSection(item.id);
-                setMobileMenuOpen(false);
-              }}
-              className={`relative block w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                activeSection === item.id
-                  ? "bg-foreground/10 text-foreground"
-                  : "text-foreground/70 hover:text-foreground hover:bg-foreground/5"
-              }`}
-            >
-              {item.label}
-              {activeSection === item.id && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r-full" />
-              )}
-            </button>
-          ))}
-
-          {/* Theme Toggle Mobile */}
-          <div className="mt-4 pt-2 border-t border-foreground/10">
-            <ThemeToggle isMobile />
-          </div>
-
-          {/* Mobile CV Download Button */}
-          <a
-            href="/CV_ANTHONI_PORTOCARRERO_RODRIGUEZ_2025.pdf"
-            download
-            className="block w-full mt-4 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25 text-center"
+          <button
+            type="button"
+            onClick={() => scrollTo("inicio")}
+            className="flex items-center gap-1.5 group"
+            style={{ fontFamily: "var(--font-mono), 'JetBrains Mono', monospace" }}
           >
-            <div className="flex items-center justify-center gap-2">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <title>Download icon</title>
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              Descargar CV
+            <span
+              className="text-sm font-medium transition-colors duration-200"
+              style={{ color: "#38bdf8" }}
+            >
+              [
+            </span>
+            <span
+              className="text-sm font-medium transition-colors duration-200"
+              style={{ color: "#f1f5f9" }}
+            >
+              anthoni.dev
+            </span>
+            <span
+              className="text-sm font-medium transition-colors duration-200"
+              style={{ color: "#38bdf8" }}
+            >
+              ]
+            </span>
+          </button>
+
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-0.5">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => scrollTo(item.id)}
+                  onMouseEnter={() => setHoveredItem(item.id)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                  className="relative px-4 py-2 text-sm transition-colors duration-150"
+                  style={{
+                    fontFamily: "var(--font-body), 'Inter', sans-serif",
+                    color: isActive ? "#f1f5f9" : hoveredItem === item.id ? "#f1f5f9" : "#64748b",
+                  }}
+                >
+                  {item.label}
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-active"
+                      className="absolute bottom-0 left-0 right-0 mx-auto h-px"
+                      style={{ background: "#38bdf8", width: "60%", left: "20%" }}
+                      transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+
+            {/* Available badge */}
+            <div
+              className="flex items-center gap-1.5 ml-3 px-3 py-1.5 rounded"
+              style={{
+                border: "1px solid rgba(52,211,153,0.4)",
+                background: "rgba(52,211,153,0.04)",
+                fontFamily: "var(--font-mono), 'JetBrains Mono', monospace",
+                fontSize: "11px",
+                color: "#34d399",
+              }}
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full pulse-dot"
+                style={{ background: "#34d399" }}
+              />
+              Disponible
             </div>
-          </a>
+
+            {/* Contactar CTA */}
+            <button
+              type="button"
+              onClick={() => scrollTo("contacto")}
+              className="ml-3 node px-4 py-2 text-sm transition-all duration-150 hover:text-[#38bdf8]"
+              style={{
+                borderColor: "rgba(56,189,248,0.4)",
+                color: "#94a3b8",
+                fontFamily: "var(--font-body), 'Inter', sans-serif",
+              }}
+            >
+              Contactar
+            </button>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden p-2"
+            style={{ color: "#64748b" }}
+            aria-label="Abrir menú"
+          >
+            <svg
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              viewBox="0 0 24 24"
+            >
+              {menuOpen ? (
+                <>
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </>
+              ) : (
+                <>
+                  <line x1="3" y1="7" x2="21" y2="7" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="17" x2="21" y2="17" />
+                </>
+              )}
+            </svg>
+          </button>
         </div>
       </div>
-    </nav>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+            className="md:hidden overflow-hidden"
+            style={{
+              background: "rgba(11,15,20,0.97)",
+              borderTop: "1px solid rgba(148,163,184,0.10)",
+            }}
+          >
+            <div className="px-6 py-4 space-y-1">
+              {NAV_ITEMS.map((item, i) => (
+                <motion.button
+                  key={item.id}
+                  type="button"
+                  onClick={() => scrollTo(item.id)}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.04 }}
+                  className="block w-full text-left px-3 py-2.5 rounded text-sm"
+                  style={{
+                    fontFamily: "var(--font-body), 'Inter', sans-serif",
+                    color: activeSection === item.id ? "#38bdf8" : "#64748b",
+                    background:
+                      activeSection === item.id
+                        ? "rgba(56,189,248,0.06)"
+                        : "transparent",
+                    borderRadius: "6px",
+                  }}
+                >
+                  {item.label}
+                </motion.button>
+              ))}
+              <button
+                type="button"
+                onClick={() => scrollTo("contacto")}
+                className="block w-full mt-3 node px-4 py-2.5 text-sm text-center"
+                style={{
+                  borderColor: "rgba(56,189,248,0.4)",
+                  color: "#38bdf8",
+                  fontFamily: "var(--font-body), 'Inter', sans-serif",
+                }}
+              >
+                Contactar →
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
   );
 }

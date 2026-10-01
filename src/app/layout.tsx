@@ -1,81 +1,68 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, JetBrains_Mono, Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/ThemeProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const geist = Geist({
   subsets: ["latin"],
-  display: "swap",
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-display",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  display: "swap",
+  weight: ["400", "500", "600"],
+  variable: "--font-mono",
 });
 
-const siteUrl = "https://anthonidev.site";
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-body",
+});
+
+const siteUrl = "https://anthonidev.me";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: "Anthoni Portocarrero Rodriguez - Tech Lead & Full Stack Developer | Portfolio",
-    template: "%s | Anthoni Portocarrero Rodriguez",
-  },
+  title: "Anthoni Portocarrero · Tech Lead & Full Stack Engineer",
   description:
-    "Anthoni Portocarrero Rodriguez - Tech Lead e Ingeniero de Software con 5+ años de experiencia diseñando y desarrollando soluciones full stack escalables. Especializado en Next.js, NestJS, Django, React y AWS. Portfolio profesional.",
+    "Tech Lead e Ingeniero Full Stack con 6+ años diseñando sistemas escalables — NestJS, Next.js, TypeScript, AWS. Disponible para proyectos y posiciones senior.",
   keywords: [
-    "Anthoni Portocarrero Rodriguez",
+    "Tech Lead",
+    "Full Stack Engineer",
+    "Next.js",
+    "NestJS",
+    "TypeScript",
+    "AWS",
+    "Lima",
+    "Peru",
     "Anthoni Portocarrero",
-    "Portocarrero Rodriguez",
-    "Tech Lead Peru",
-    "Full Stack Developer Peru",
-    "Ingeniero de Software Peru",
-    "Desarrollador Web Peru",
-    "Next.js Developer",
-    "React Developer",
-    "NestJS Developer",
-    "Django Developer",
-    "AWS Developer",
-    "TypeScript Developer",
-    "JavaScript Developer",
-    "Python Developer",
-    "Software Engineer Peru",
     "anthonidev",
-    "UNI Ingeniero",
-    "Universidad Nacional de Ingeniería",
   ],
-  authors: [{ name: "Anthoni Portocarrero", url: siteUrl }],
-  creator: "Anthoni Portocarrero",
-  publisher: "Anthoni Portocarrero",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
+  authors: [{ name: "Anthoni Portocarrero Rodriguez", url: siteUrl }],
+  creator: "Anthoni Portocarrero Rodriguez",
+  metadataBase: new URL(siteUrl),
   openGraph: {
-    type: "profile",
-    locale: "es_ES",
-    url: siteUrl,
-    title: "Anthoni Portocarrero Rodriguez - Tech Lead & Full Stack Developer",
+    title: "Anthoni Portocarrero · Tech Lead & Full Stack Engineer",
     description:
-      "Anthoni Portocarrero Rodriguez - Tech Lead e Ingeniero de Software con 5+ años de experiencia diseñando y desarrollando soluciones full stack escalables. Especializado en Next.js, NestJS, Django, React y AWS.",
-    siteName: "Anthoni Portocarrero Rodriguez - Portfolio Profesional",
+      "Tech Lead e Ingeniero Full Stack con 6+ años diseñando sistemas escalables — NestJS, Next.js, TypeScript, AWS. Disponible para proyectos y posiciones senior.",
+    url: siteUrl,
+    siteName: "Anthoni Portocarrero",
+    type: "website",
+    locale: "es_ES",
     images: [
       {
         url: `${siteUrl}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: "Anthoni Portocarrero Rodriguez - Tech Lead & Full Stack Developer",
+        alt: "Anthoni Portocarrero · Tech Lead & Full Stack Engineer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anthoni Portocarrero Rodriguez - Tech Lead & Full Stack Developer",
+    title: "Anthoni Portocarrero · Tech Lead & Full Stack Engineer",
     description:
-      "Anthoni Portocarrero Rodriguez - Tech Lead e Ingeniero de Software con 5+ años de experiencia diseñando y desarrollando soluciones full stack escalables.",
+      "Tech Lead e Ingeniero Full Stack con 6+ años diseñando sistemas escalables — NestJS, Next.js, TypeScript, AWS.",
     images: [`${siteUrl}/og-image.png`],
   },
   robots: {
@@ -97,62 +84,40 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
-  manifest: "/manifest.json",
-  alternates: {
-    canonical: siteUrl,
-  },
+  alternates: { canonical: siteUrl },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Anthoni Portocarrero Rodriguez",
-    jobTitle: "Tech Lead & Full Stack Developer",
+    jobTitle: "Tech Lead & Full Stack Engineer",
     description:
-      "Tech Lead e Ingeniero de Software con 5+ años de experiencia diseñando y desarrollando soluciones full stack escalables.",
+      "Tech Lead e Ingeniero Full Stack con 6+ años diseñando sistemas escalables — NestJS, Next.js, TypeScript, AWS.",
     url: siteUrl,
     email: "softwaretoni21@gmail.com",
-    image: `${siteUrl}/og-image.png`,
+    image: `${siteUrl}/imgs/profile.webp`,
     sameAs: [
-      "https://github.com/anthoniportocarrero",
-      "https://linkedin.com/in/anthoni-portocarrero",
+      "https://github.com/anthonidev",
+      "https://linkedin.com/in/anthoni-portotocarrero-rodriguez-06089119a",
     ],
-    knowsAbout: [
-      "Next.js",
-      "React",
-      "NestJS",
-      "Django",
-      "AWS",
-      "TypeScript",
-      "JavaScript",
-      "Python",
-      "Full Stack Development",
-      "Software Engineering",
-    ],
-    alumniOf: {
-      "@type": "Organization",
-      name: "Universidad Nacional de Ingeniería",
-    },
   };
 
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html
+      lang="es"
+      className={`${geist.variable} ${jetbrainsMono.variable} ${inter.variable}`}
+    >
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ThemeProvider>{children}</ThemeProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

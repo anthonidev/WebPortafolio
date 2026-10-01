@@ -1,378 +1,377 @@
-'use client';
+"use client";
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import type { Project } from "@/data/projects";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, EffectFade, Autoplay } from 'swiper/modules';
-import type { Swiper as SwiperType } from 'swiper';
-import { technologiesData } from '@/data/projects';
+const ExternalIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    <polyline points="15 3 21 3 21 9" />
+    <line x1="10" y1="14" x2="21" y2="3" />
+  </svg>
+);
 
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
+const LAYER_BORDERS: Record<string, string> = {
+  sky: "rgba(56,189,248,0.35)",
+  emerald: "rgba(52,211,153,0.35)",
+  violet: "rgba(167,139,250,0.35)",
+};
 
-interface ProjectCardProps {
-  id: number;
-  name: string;
-  description: string;
-  images: string[];
-  link: string;
-  technologies: number[];
+const LAYER_COLORS: Record<string, string> = {
+  sky: "#38bdf8",
+  emerald: "#34d399",
+  violet: "#a78bfa",
+};
+
+interface Props {
+  project: Project;
+  index: number;
 }
 
-export default function ProjectCard({
-  name,
-  description,
-  images,
-  link,
-  technologies,
-}: ProjectCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
+function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
+  const [imgIndex, setImgIndex] = useState(0);
+  const accentColor = LAYER_COLORS[project.layer];
+  const borderColor = LAYER_BORDERS[project.layer];
 
-  // Generate a valid CSS selector ID from project name
-  const getSafeId = (text: string) => {
-    return text
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Remove accents
-      .replace(/[^a-zA-Z0-9]/g, '-') // Replace special chars with dash
-      .replace(/-+/g, '-') // Replace multiple dashes with single dash
-      .replace(/^-|-$/g, ''); // Remove leading/trailing dashes
-  };
-
-  const safeId = getSafeId(name);
-
-  // Prevent body scroll when modal is open
   useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") setImgIndex((i) => (i + 1) % project.images.length);
+      if (e.key === "ArrowLeft") setImgIndex((i) => (i - 1 + project.images.length) % project.images.length);
     };
-  }, [isModalOpen]);
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose, project.images.length]);
 
-  const getTechNames = () => {
-    return technologies
-      .map((techId) => technologiesData.find((tech) => tech.id === techId))
-      .filter(Boolean);
-  };
+  const prev = useCallback(() => setImgIndex((i) => (i - 1 + project.images.length) % project.images.length), [project.images.length]);
+  const next = useCallback(() => setImgIndex((i) => (i + 1) % project.images.length), [project.images.length]);
 
   return (
-    <>
-      {/* Card Preview */}
-      {!isModalOpen && (
-        <motion.div
-          layoutId={`project-container-${name}`}
-          onClick={() => setIsModalOpen(true)}
-          whileHover={{ y: -8 }}
-          transition={{
-            layout: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
-            default: { duration: 0.3, ease: "easeOut" }
-          }}
-          className="group relative bg-background/50 backdrop-blur-sm border border-foreground/10 rounded-xl sm:rounded-2xl overflow-hidden hover:border-blue-500/30 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 cursor-pointer h-full flex flex-col"
-        >
-        {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(7,11,17,0.92)", backdropFilter: "blur(6px)" }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 8 }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        className="node w-full max-w-3xl overflow-hidden"
+        style={{ borderColor, maxHeight: "90vh", display: "flex", flexDirection: "column" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Image gallery */}
+        <div className="relative overflow-hidden" style={{ aspectRatio: "16/9", flexShrink: 0 }}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={imgIndex}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0"
+            >
+              <Image
+                src={project.images[imgIndex]}
+                alt={`${project.title} — imagen ${imgIndex + 1}`}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 768px"
+                priority
+              />
+            </motion.div>
+          </AnimatePresence>
 
-        {/* Image Carousel */}
-        <div className="relative aspect-video bg-foreground/5 overflow-hidden">
-          <Swiper
-            modules={[Navigation, Pagination, EffectFade, Autoplay]}
-            effect="fade"
-            fadeEffect={{ crossFade: true }}
-            navigation={{
-              nextEl: `.swiper-button-next-${safeId}`,
-              prevEl: `.swiper-button-prev-${safeId}`,
-            }}
-            pagination={{
-              clickable: true,
-              dynamicBullets: true,
-            }}
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true,
-            }}
-            loop={images.length > 1}
-            className="h-full w-full project-card-swiper"
-            onClick={(swiper, e) => {
-              const target = e.target as HTMLElement;
-              // Don't open modal if clicking navigation buttons
-              if (!target.closest('.swiper-button-next') && !target.closest('.swiper-button-prev')) {
-                return;
-              }
-              e.stopPropagation();
-            }}
-          >
-            {images.map((img, index) => (
-              <SwiperSlide key={img}>
-                <div className="relative w-full h-full">
-                  <Image
-                    src={img}
-                    alt={`${name} - imagen ${index + 1}`}
-                    fill
-                    className="object-cover transition-all duration-500 grayscale group-hover:grayscale-0 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-
-          {/* Custom Navigation Buttons */}
-          {images.length > 1 && (
+          {/* Nav arrows — only if multiple images */}
+          {project.images.length > 1 && (
             <>
-              <div
-                className={`swiper-button-prev-${safeId} absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-background/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background z-20 cursor-pointer`}
-                onClick={(e) => e.stopPropagation()}
+              <button
+                onClick={prev}
+                className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-full"
+                style={{ background: "rgba(11,15,20,0.75)", border: "1px solid rgba(148,163,184,0.2)", color: "#f1f5f9" }}
+                aria-label="Imagen anterior"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <title>Previous</title>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </div>
-              <div
-                className={`swiper-button-next-${safeId} absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-background/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background z-20 cursor-pointer`}
-                onClick={(e) => e.stopPropagation()}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6" /></svg>
+              </button>
+              <button
+                onClick={next}
+                className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-full"
+                style={{ background: "rgba(11,15,20,0.75)", border: "1px solid rgba(148,163,184,0.2)", color: "#f1f5f9" }}
+                aria-label="Imagen siguiente"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <title>Next</title>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
+              </button>
             </>
           )}
 
-          {/* Click to expand hint */}
-          <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-            <div className="p-2 bg-background/80 backdrop-blur-sm rounded-lg">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <title>Expand icon</title>
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+          {/* Image counter */}
+          {project.images.length > 1 && (
+            <div
+              className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5"
+            >
+              {project.images.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setImgIndex(i)}
+                  className="rounded-full transition-all duration-200"
+                  style={{
+                    width: i === imgIndex ? "20px" : "6px",
+                    height: "6px",
+                    background: i === imgIndex ? accentColor : "rgba(148,163,184,0.4)",
+                  }}
+                  aria-label={`Ir a imagen ${i + 1}`}
                 />
-              </svg>
+              ))}
             </div>
-          </div>
+          )}
+
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 flex items-center justify-center w-8 h-8 rounded-full"
+            style={{ background: "rgba(11,15,20,0.75)", border: "1px solid rgba(148,163,184,0.2)", color: "#94a3b8" }}
+            aria-label="Cerrar"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
 
         {/* Content */}
-        <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 relative z-20 flex-1 flex flex-col">
-          {/* Title & Description */}
-          <div className="space-y-2 flex-1">
-            <div className="flex items-start justify-between gap-2">
-              <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent group-hover:from-blue-500 group-hover:to-purple-600 transition-all duration-300">
-                {name}
-              </h3>
-              <div className="mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <svg
-                  className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <title>Arrow icon</title>
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 7h10M7 7v10M7 7l10 10"
-                  />
-                </svg>
-              </div>
-            </div>
-            <p className="text-foreground/60 text-xs sm:text-sm leading-relaxed line-clamp-2">
-              {description}
-            </p>
+        <div className="p-6 overflow-y-auto">
+          <div className="flex items-start justify-between gap-4 mb-3">
+            <h3
+              style={{
+                fontFamily: "var(--font-display), 'Geist', sans-serif",
+                fontWeight: 700,
+                fontSize: "20px",
+                color: "#f1f5f9",
+                lineHeight: 1.2,
+              }}
+            >
+              {project.title}
+            </h3>
+            {project.live && (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="node flex items-center gap-2 px-4 py-2 flex-shrink-0 transition-all duration-150"
+                style={{
+                  borderColor: "rgba(56,189,248,0.5)",
+                  color: "#38bdf8",
+                  fontFamily: "var(--font-body), 'Inter', sans-serif",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = "rgba(56,189,248,0.08)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = "rgba(15,23,42,0.85)";
+                }}
+              >
+                Demo
+                <ExternalIcon />
+              </a>
+            )}
           </div>
 
-          {/* Technologies */}
-          <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-2">
-            {getTechNames().slice(0, 4).map((tech) => (
+          <p
+            style={{
+              color: "#94a3b8",
+              fontFamily: "var(--font-body), 'Inter', sans-serif",
+              fontSize: "14px",
+              lineHeight: 1.7,
+              marginBottom: "16px",
+            }}
+          >
+            {project.description}
+          </p>
+
+          <div className="flex flex-wrap gap-1.5">
+            {project.technologies.map((tech) => (
               <span
-                key={tech?.id}
-                className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-foreground/5 to-foreground/10 border border-foreground/10 rounded-lg text-xs font-medium hover:border-blue-500/30 transition-colors"
+                key={tech}
+                className="node px-2.5 py-1"
+                style={{
+                  borderColor,
+                  fontFamily: "var(--font-mono), 'JetBrains Mono', monospace",
+                  fontSize: "11px",
+                  color: accentColor,
+                }}
               >
-                {tech?.name}
+                {tech}
               </span>
             ))}
-            {getTechNames().length > 4 && (
-              <span className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-blue-500/10 to-purple-600/10 border border-blue-500/20 rounded-lg text-xs font-medium text-blue-500">
-                +{getTechNames().length - 4}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+export default function ProjectCard({ project, index }: Props) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const accentColor = LAYER_COLORS[project.layer];
+  const borderColor = LAYER_BORDERS[project.layer];
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 1, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0, margin: "-40px" }}
+        transition={{ delay: index * 0.05, type: "spring", stiffness: 120, damping: 22 }}
+        className="node flex flex-col overflow-hidden cursor-pointer"
+        style={{
+          borderColor: isHovered ? borderColor : "rgba(148,163,184,0.2)",
+          transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+          boxShadow: isHovered ? "0 8px 32px rgba(0,0,0,0.5)" : undefined,
+        }}
+        onClick={() => setModalOpen(true)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Image */}
+        <div className="relative overflow-hidden" style={{ aspectRatio: "16/10" }}>
+          <Image
+            src={project.images[0]}
+            alt={project.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            style={{
+              transform: isHovered ? "scale(1.04)" : "scale(1)",
+              transition: "transform 0.4s ease",
+            }}
+          />
+
+          {/* Hover overlay */}
+          <div
+            className="absolute inset-0 flex items-center justify-center transition-opacity duration-200"
+            style={{ background: "rgba(11,15,20,0.65)", opacity: isHovered ? 1 : 0 }}
+          >
+            <span
+              className="node px-4 py-2 text-sm"
+              style={{
+                color: accentColor,
+                borderColor,
+                fontFamily: "var(--font-body), 'Inter', sans-serif",
+                fontSize: "13px",
+              }}
+            >
+              Ver proyecto →
+            </span>
+          </div>
+
+          {/* Image count badge */}
+          {project.images.length > 1 && (
+            <div
+              className="absolute bottom-2 left-2 flex items-center gap-1 px-2 py-0.5 rounded"
+              style={{
+                background: "rgba(11,15,20,0.75)",
+                fontFamily: "var(--font-mono), 'JetBrains Mono', monospace",
+                fontSize: "10px",
+                color: "#64748b",
+              }}
+            >
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              {project.images.length}
+            </div>
+          )}
+
+          {/* Featured badge */}
+          {project.featured && (
+            <div
+              className="node absolute top-2 right-2 px-2 py-0.5"
+              style={{
+                border: "1px solid rgba(56,189,248,0.4)",
+                fontFamily: "var(--font-mono), 'JetBrains Mono', monospace",
+                fontSize: "10px",
+                color: "#38bdf8",
+              }}
+            >
+              featured
+            </div>
+          )}
+        </div>
+
+        {/* Body */}
+        <div className="flex flex-col flex-1 p-5 gap-3">
+          <h3
+            style={{
+              fontFamily: "var(--font-display), 'Geist', sans-serif",
+              fontWeight: 700,
+              fontSize: "15px",
+              color: "#f1f5f9",
+              lineHeight: 1.3,
+            }}
+          >
+            {project.title}
+          </h3>
+
+          <p
+            className="flex-1"
+            style={{
+              color: "#94a3b8",
+              fontFamily: "var(--font-body), 'Inter', sans-serif",
+              fontSize: "13px",
+              lineHeight: 1.65,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {project.description}
+          </p>
+
+          {/* Tech tags */}
+          <div className="flex flex-wrap gap-1.5">
+            {project.technologies.slice(0, 4).map((tech) => (
+              <span
+                key={tech}
+                className="node px-2 py-0.5"
+                style={{
+                  fontFamily: "var(--font-mono), 'JetBrains Mono', monospace",
+                  fontSize: "10px",
+                  color: "#64748b",
+                  borderColor,
+                }}
+              >
+                {tech}
+              </span>
+            ))}
+            {project.technologies.length > 4 && (
+              <span
+                className="node px-2 py-0.5"
+                style={{
+                  fontFamily: "var(--font-mono), 'JetBrains Mono', monospace",
+                  fontSize: "10px",
+                  color: "#475569",
+                }}
+              >
+                +{project.technologies.length - 4}
               </span>
             )}
           </div>
         </div>
       </motion.div>
-      )}
 
-      {/* Expanded Modal */}
       <AnimatePresence>
-        {isModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-background/80 backdrop-blur-md"
-            onClick={() => setIsModalOpen(false)}
-          >
-            <motion.div
-              layoutId={`project-container-${name}`}
-              transition={{
-                layout: { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
-              }}
-              className="relative w-full max-w-5xl bg-background border border-foreground/10 rounded-xl sm:rounded-2xl shadow-2xl"
-              style={{ overflow: 'hidden' }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="max-h-[90vh] overflow-y-auto custom-scrollbar">
-              {/* Close Button */}
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 p-2 bg-background/90 backdrop-blur-sm rounded-full hover:bg-foreground/10 transition-colors shadow-lg"
-                aria-label="Cerrar"
-              >
-                <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <title>Close icon</title>
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-
-              {/* Image Carousel - Larger */}
-              <div className="relative aspect-video bg-foreground/5 overflow-hidden rounded-t-xl sm:rounded-t-2xl">
-                <Swiper
-                  modules={[Navigation, Pagination, Autoplay]}
-                  navigation={{
-                    nextEl: `.modal-swiper-button-next-${safeId}`,
-                    prevEl: `.modal-swiper-button-prev-${safeId}`,
-                  }}
-                  pagination={{
-                    clickable: true,
-                    dynamicBullets: true,
-                  }}
-                  autoplay={{
-                    delay: 5000,
-                    disableOnInteraction: false,
-                    pauseOnMouseEnter: true,
-                  }}
-                  loop={images.length > 1}
-                  className="h-full w-full modal-swiper"
-                >
-                  {images.map((img, index) => (
-                    <SwiperSlide key={img}>
-                      <div className="relative w-full h-full">
-                        <Image
-                          src={img}
-                          alt={`${name} - imagen ${index + 1}`}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 1280px) 100vw, 1280px"
-                          priority={index === 0}
-                        />
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-
-                {/* Custom Navigation Buttons */}
-                {images.length > 1 && (
-                  <>
-                    <div
-                      className={`modal-swiper-button-prev-${safeId} absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2 sm:p-3 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-all z-20 cursor-pointer`}
-                    >
-                      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <title>Previous</title>
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                      </svg>
-                    </div>
-                    <div
-                      className={`modal-swiper-button-next-${safeId} absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2 sm:p-3 bg-background/80 backdrop-blur-sm rounded-full hover:bg-background transition-all z-20 cursor-pointer`}
-                    >
-                      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <title>Next</title>
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Content */}
-              <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
-                {/* Title */}
-                <div>
-                  <h2 className="text-2xl sm:text-3xl font-bold mb-2 sm:mb-3 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                    {name}
-                  </h2>
-                  <p className="text-foreground/70 text-sm sm:text-base leading-relaxed">
-                    {description}
-                  </p>
-                </div>
-
-                {/* Technologies */}
-                <div>
-                  <h3 className="text-xs sm:text-sm font-semibold text-foreground/60 mb-2 sm:mb-3">
-                    Tecnologías utilizadas
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {getTechNames().map((tech) => (
-                      <span
-                        key={tech?.id}
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 bg-foreground/5 border border-foreground/10 rounded-lg text-xs sm:text-sm font-medium hover:bg-foreground/10 transition-colors"
-                      >
-                        {tech?.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Link */}
-                <a
-                  href={link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-sm sm:text-base font-medium hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25"
-                >
-                  Visitar proyecto
-                  <svg
-                    className="w-4 h-4 sm:w-5 sm:h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <title>External link arrow icon</title>
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </a>
-              </div>
-              </div>
-            </motion.div>
-          </motion.div>
+        {modalOpen && (
+          <ProjectModal project={project} onClose={() => setModalOpen(false)} />
         )}
       </AnimatePresence>
     </>
