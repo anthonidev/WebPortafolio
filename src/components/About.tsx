@@ -1,5 +1,5 @@
 "use client";
-import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 const SKILL_GROUPS = [
@@ -58,18 +58,25 @@ const BIO_BLOCKS = [
 
 function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-  const motionVal = useMotionValue(0);
-  const spring = useSpring(motionVal, { stiffness: 60, damping: 18 });
-  const [display, setDisplay] = useState("0");
+  const inView = useInView(ref, { once: true, amount: 0 });
+  const [display, setDisplay] = useState(0);
+  const started = useRef(false);
 
   useEffect(() => {
-    if (inView) motionVal.set(target);
-  }, [inView, motionVal, target]);
-
-  useEffect(() => {
-    return spring.on("change", (v) => setDisplay(Math.round(v).toString()));
-  }, [spring]);
+    if (!inView || started.current) return;
+    started.current = true;
+    const duration = 1200;
+    const startTime = performance.now();
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(eased * target));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [inView, target]);
 
   return <span ref={ref}>{display}{suffix}</span>;
 }
